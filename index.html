@@ -59,7 +59,7 @@
   .presets button:hover{border-color:var(--accent);color:var(--accent)}
   .presets button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
   .dt{display:flex;flex-direction:column;gap:5px;margin-top:9px}
-  .dt label{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
+  .dt label{font-size:11.5px;color:var(--muted)}
   .dt input{font-family:var(--mono);font-size:11.5px;border:1px solid var(--hair);border-radius:6px;padding:5px 7px;background:var(--surface);color:var(--ink)}
 
   .series{max-height:300px;overflow:auto;margin:-2px -4px 0;padding:0 4px}
@@ -128,7 +128,7 @@
   <header class="masthead">
     <div>
       <p class="eyebrow">Rio Nambé · Rio Pojoaque</p>
-      <h1>PVID Gauge Explorer (Beta Version 2c)</h1>
+      <h1>PVID Gauge Explorer (Evaluation Version 3.1.1)</h1>
     </div>
     <div class="right" id="dataStamp">no data loaded</div>
   </header>
@@ -145,7 +145,7 @@
   <div class="layout" id="mainUI" style="display:none">
     <aside class="panel controls" aria-label="Controls">
       <div class="group">
-        <span class="label">Data</span>
+        <span class="label">Data year</span>
         <div class="seg" id="yearModeSeg" role="group" aria-label="Data year">
           <button type="button" data-v="current" aria-pressed="true">This year</button>
           <button type="button" data-v="prior" aria-pressed="false">Prior years</button>
@@ -159,22 +159,22 @@
       </div>
 
       <div class="group">
-        <span class="label">Adjust data</span>
+        <span class="label">Data adjustments</span>
         <div class="seg" id="adjustSeg" role="group" aria-label="Adjust data">
-          <button type="button" data-v="none" aria-pressed="true" data-info="Raw OSE data">None</button>
+          <button type="button" data-v="none" aria-pressed="true" data-info="Raw OSE and USGS data">None</button>
           <button type="button" data-v="adjust" data-info="NambePuebloNet = HighLine + UpperConsol − Nueva − Llano − Comunidad&#10;ConsolNet = UpperConsol − Nueva − Llano − Comunidad&#10;IndiosAdj = 1.0724 × (Indios cfs − 0.135 cfs)">Adjust</button>
         </div>
-        <p class="hint">Hover a button for what it does. Adjust never changes the saved data.</p>
+        <p class="hint">Hover a button to see what it does.</p>
       </div>
 
       <div class="group">
-        <span class="label">Measure</span>
+        <span class="label">Graph</span>
         <div class="seg" id="measureSeg" role="group" aria-label="Measure">
-          <button type="button" data-v="cfs" aria-pressed="true">Flow(cfs)</button>
-          <button type="button" data-v="af" aria-pressed="false">Total(AF)</button>
+          <button type="button" data-v="cfs" aria-pressed="true" data-info="Instantaneous flow rate at each gauge.">Flow(CFS)</button>
+          <button type="button" data-v="af" aria-pressed="false" data-info="Cumulative acre-feet past each gauge since the window start (∫ CFS·dt ÷ 43,560).">Total(AF)</button>
           <button type="button" data-v="afac" aria-pressed="false" style="display:none" data-info="Irrigable acres">TotalAF/acre</button>
         </div>
-        <p class="hint" id="measureHint">Instantaneous flow rate at each gauge.</p>
+        <p class="hint">Hover a button to see what it does.</p>
       </div>
 
       <div class="group">
@@ -189,11 +189,11 @@
           <input type="number" id="yminVal" placeholder="auto" step="any" style="width:84px" />
           <button class="filebtn ghost" id="yminAuto" type="button" style="padding:5px 9px">auto</button>
         </div>
-        <p class="hint">Leave auto to fit the data. Resets to auto when you switch measure.</p>
+        <p class="hint">Leave auto to fit the data.</p>
       </div>
 
       <div class="group">
-        <span class="label">Window</span>
+        <span class="label">Horizontal scale</span>
         <div class="presets" id="presets">
           <button type="button" data-w="1">24 h</button>
           <button type="button" data-w="7">7 d</button>
@@ -202,9 +202,9 @@
           <button type="button" data-w="all">All</button>
         </div>
         <div class="dt">
-          <label for="startDt">start (Total AF accrues from here)</label>
+          <label for="startDt">Start (Total AF accrues from here)</label>
           <input type="datetime-local" id="startDt" />
-          <label for="endDt">end</label>
+          <label for="endDt">End</label>
           <input type="datetime-local" id="endDt" />
         </div>
       </div>
@@ -218,14 +218,13 @@
     </aside>
 
     <main class="stage">
-      <div class="statusline" id="statusline"></div>
       <div class="chartcard">
         <svg class="chart" id="chart" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Flow chart"></svg>
         <div class="tooltip" id="tooltip"></div>
         <div class="emptynote" id="emptynote" style="display:none"></div>
       </div>
       <footer>
-        <span id="footnote">Hover the plot to read exact values. Total (AF) integrates discharge from the window start — change the start date to re-zero the accrual.</span>
+        <span id="footnote">Hover the plot to read exact values.</span>
         <span><code>Based on OSE provisional data. Capability design by Greg Swift. Programming by Anthropic Claude Opus 4.8.</code></span>
       </footer>
     </main>
@@ -263,7 +262,7 @@
   });
 
   var state={measure:"cfs",resample:"raw",scale:"linear",adjust:false,
-             winStart:null,winEnd:null,winAll:true,winSeason:false,ymax:null,ymin:null,year:null,schedule:null,activeCycle:null,visible:new Set(),emph:new Set()};
+             winStart:null,winEnd:null,winAll:true,winSeason:false,winPreset:null,ymax:null,ymin:null,year:null,schedule:null,activeCycle:null,visible:new Set(),emph:new Set()};
   var rawData=null;         // the loaded CSV, never modified
   var data=null;            // active view: rawData, or the adjusted version
   var resampleCache={key:null,val:null};
@@ -273,13 +272,13 @@
   // The file's "Indios" line applies to the IndiosAdj curve. Names are matched
   // after normalizing (case/space/punctuation removed), so editors aren't brittle.
   var ACRE_TARGETS=[  // [name as written in the file, curve it applies to]
-    ["NambePuebloNet","NambePuebloNet"],["Indios","IndiosAdj"],
+    ["NambePuebloNet","NambePuebloNet"],
     ["Nueva","Nueva"],["Llano","Llano"],["Comunidad","Comunidad"],["Ortiz","Ortiz"],
     ["Gardunos","Gardunos"],["Jose G. Ortiz","Jose G. Ortiz"],["Cano","Cano"],
     ["Rincon","Rincon"],["Las Joyas","Las Joyas"],["Trujillos","Trujillos"],
     ["Barranco Alto","Barranco Alto"],["Larga","Larga"],["Ancon de Jacona","Ancon de Jacona"],
     ["Barranco","Barranco"],["Otra Vanda","Otra Vanda"],["Rancho","Rancho"],
-    ["San Ildefonso","San Ildefonso"]
+    ["Indios","IndiosAdj"],["San Ildefonso","San Ildefonso"]
   ];
   function acreNorm(s){ return s.toLowerCase().replace(/[^a-z0-9]/g,""); }
   var ACRE_KEYMAP={}; ACRE_TARGETS.forEach(function(p){ ACRE_KEYMAP[acreNorm(p[0])]=p[1]; });
@@ -420,17 +419,37 @@
     if(!t.length) throw new Error("No parseable timestamps in the first column.");
     return {names:names,t:t,cols:cols};
   }
-  function toAF(t,vals){ var out=new Array(vals.length),acc=0,pt=null,pv=null;
-    for(var i=0;i<vals.length;i++){ var v=vals[i];
-      if(v!=null&&isFinite(v)){
-        if(pt!=null) acc+=0.5*(pv+v)*((t[i]-pt)/1000)/CF_PER_AF; // integrate between consecutive real readings
-        pt=t[i]; pv=v;
-      }
-      out[i]=acc; // running total carries flat across blanks
+  function toAF(t,vals){
+    // cumulative acre-feet with piecewise-linear interpolation of cfs, so the
+    // curve ramps smoothly across no-data gaps instead of flatlining then jumping.
+    var out=new Array(vals.length), rt=[], rv=[];
+    for(var i=0;i<vals.length;i++){ var v=vals[i]; if(v!=null&&isFinite(v)){ rt.push(t[i].getTime()); rv.push(v); } }
+    if(rt.length===0){ for(var i=0;i<vals.length;i++) out[i]=0; return out; }
+    var cum=new Array(rt.length); cum[0]=0;
+    for(var k=1;k<rt.length;k++){ cum[k]=cum[k-1]+0.5*(rv[k-1]+rv[k])*((rt[k]-rt[k-1])/1000)/CF_PER_AF; }
+    var seg=0, last=rt.length-1;
+    for(var i=0;i<vals.length;i++){ var ti=t[i].getTime();
+      if(ti<=rt[0]){ out[i]=0; continue; }               // before the first reading
+      if(ti>=rt[last]){ out[i]=cum[last]; continue; }     // after the last: flat at the total
+      while(seg<last && rt[seg+1]<=ti) seg++;
+      var ta=rt[seg], tb=rt[seg+1], va=rv[seg], vb=rv[seg+1];
+      var vi=va+(vb-va)*((ti-ta)/(tb-ta));                // interpolated cfs at ti
+      out[i]=cum[seg]+0.5*(va+vi)*((ti-ta)/1000)/CF_PER_AF;
     }
     return out;
   }
   function getResampled(){ return data; }   // raw 15-min only; averaging removed
+
+  // value of a plotted series at grid index i, interpolated across no-data gaps
+  // the same way the connecting line bridges them (so the hover matches the line)
+  function interpAt(disp,times,i){
+    var y=disp[i]; if(y!=null&&isFinite(y)) return y;
+    var L=i-1; while(L>=0 && (disp[L]==null||!isFinite(disp[L]))) L--;
+    var R=i+1; while(R<disp.length && (disp[R]==null||!isFinite(disp[R]))) R++;
+    if(L<0||R>=disp.length) return null;                  // no bridging past the ends
+    var t0=times[L].getTime(), t1=times[R].getTime(), ti=times[i].getTime();
+    return disp[L]+(disp[R]-disp[L])*((ti-t0)/(t1-t0));
+  }
 
   // ---------- formatting ----------
   function pad(n){return String(n).padStart(2,"0");}
@@ -438,6 +457,14 @@
   function fmt(v){ if(v==null||!isFinite(v))return "–"; var a=Math.abs(v);
     if(a>=1000)return Math.round(v).toLocaleString(); if(a>=100)return v.toFixed(0);
     if(a>=10)return v.toFixed(1); if(a>=1)return v.toFixed(2); if(a===0)return "0"; return v.toFixed(3); }
+  // y-axis tick labels: same rounding, but trailing zeros trimmed (0.500->0.5, 1.00->1)
+  // decimals needed so a tick step prints exactly (0.5 -> 1, 0.05 -> 2, 1 -> 0)
+  function stepDecimals(step){ step=Math.abs(step); if(!(step>0))return 0;
+    for(var d=0;d<=6;d++){ var p=step*Math.pow(10,d); if(Math.abs(p-Math.round(p))<1e-9)return d; } return 6; }
+  // y-axis tick label: fixed decimals across the whole axis (so 1.0, 2.0 line up
+  // with 0.5, 1.5), except a bare "0".
+  function fmtTickY(v,dec){ if(v==null||!isFinite(v))return "–";
+    if(Math.abs(v)>=1000)return Math.round(v).toLocaleString(); return v.toFixed(dec); }
   function fmtDateShort(d){ return (d.getMonth()+1)+"/"+d.getDate()+"/"+String(d.getFullYear()).slice(2); }
   function fmtClock(d,span){ var day=864e5;
     if(span<=2*day) return (d.getMonth()+1)+"/"+d.getDate()+" "+pad(d.getHours())+":"+pad(d.getMinutes());
@@ -454,23 +481,23 @@
     for(var e=lo;e<=hi;e++){var b=Math.pow(10,e);t.push(b); if(dec<=3)[2,5].forEach(function(m){t.push(m*b);});}
     return t.filter(function(v){return v>=min/1.5&&v<=max*1.5;}); }
 
-  // Calendar-aware x ticks: snapped to local midnight, stepped by whole days
-  // (1,2,3,7,14) and then months / years as the record lengthens.
+  // Calendar-aware x ticks, snapped to clock hours / midnight / month starts.
+  // The granularity is chosen from the window span so 24h shows datetimes, 7d
+  // shows daily midnights, and Season/All show every month.
   var H_MS=3600e3, D_MS=24*H_MS;
-  var TIME_STEPS=[
-    {ms:1*D_MS,type:"day",n:1},    {ms:2*D_MS,type:"day",n:2},
-    {ms:3*D_MS,type:"day",n:3},    {ms:7*D_MS,type:"day",n:7},
-    {ms:14*D_MS,type:"day",n:14},
-    {ms:30*D_MS,type:"month",n:1}, {ms:91*D_MS,type:"month",n:3},
-    {ms:182*D_MS,type:"month",n:6},
-    {ms:365*D_MS,type:"year",n:1}, {ms:2*365*D_MS,type:"year",n:2},
-    {ms:5*365*D_MS,type:"year",n:5},{ms:10*365*D_MS,type:"year",n:10}
-  ];
-  function chooseTimeStep(span,target){ var want=span/target;
-    for(var i=0;i<TIME_STEPS.length;i++) if(TIME_STEPS[i].ms>=want) return TIME_STEPS[i];
-    return TIME_STEPS[TIME_STEPS.length-1]; }
-  function timeTicks(startMs,endMs,target){
-    var step=chooseTimeStep(endMs-startMs,target), ticks=[];
+  function chooseTimeStep(span){
+    var H=H_MS, D=D_MS;
+    if(span <=   30*H) return {type:"hour",  n:3};   // ≤~30 h → every 3 h  (24 h ≈ 8 ticks)
+    if(span <=    4*D) return {type:"hour",  n:6};   // ≤4 d   → every 6 h
+    if(span <=   16*D) return {type:"day",   n:1};   // ≤16 d  → daily       (7 d ≈ 7 ticks)
+    if(span <=   45*D) return {type:"day",   n:3};   // ≤45 d  → every 3 days (30 d ≈ 10)
+    if(span <=  750*D) return {type:"month", n:1};   // ≤~2 yr → every month (Season & All)
+    if(span <= 1600*D) return {type:"month", n:3};   // ≤~4.4 yr → quarterly
+    if(span <= 4000*D) return {type:"year",  n:1};
+    return {type:"year", n:2};
+  }
+  function timeTicks(startMs,endMs){
+    var step=chooseTimeStep(endMs-startMs), ticks=[];
     var d0=new Date(startMs), c;
     if(step.type==="hour"){
       c=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate());      // local midnight
@@ -493,7 +520,9 @@
     return {ticks:ticks,step:step};
   }
   function fmtTick(d,type){
-    if(type==="hour") return (d.getMonth()+1)+"/"+d.getDate()+" "+pad(d.getHours())+":"+pad(d.getMinutes());
+    if(type==="hour") return (d.getHours()===0&&d.getMinutes()===0)
+      ? (d.getMonth()+1)+"/"+d.getDate()                       // date only at the midnight crossing
+      : pad(d.getHours())+":"+pad(d.getMinutes());             // time otherwise
     if(type==="day")  return (d.getMonth()+1)+"/"+d.getDate();
     if(type==="month"){ var s=d.toLocaleString(undefined,{month:"short"}); return d.getMonth()===0? s+" '"+String(d.getFullYear()).slice(2):s; }
     return String(d.getFullYear());
@@ -584,25 +613,34 @@
     if(state.ymax!=null&&isFinite(state.ymax)) ymax=state.ymax;     // user-set ceiling
     if(ymax<=ymin)ymax=ymin+1;
 
+    // y-axis ticks computed early, so the left margin can be sized to the labels
+    var yt=state.scale==="log"?logTicks(ymin,ymax):linTicks(ymin,ymax,6);
+    var ydec=yt.length>1?stepDecimals(yt[1]-yt[0]):0;
+    var yLabelChars=yt.reduce(function(m,t){return Math.max(m,fmtTickY(t,ydec).length);},1);
+
     var emphNames=series.filter(function(s){return s.emph;}).map(function(s){return s.name;});
-    var longest=emphNames.reduce(function(m,n){return Math.max(m,n.length);},0);
-    var labelSpace=emphNames.length?Math.min(150,longest*6.6+14):0;
-    var mL=66,mR=14+labelSpace,mT=12,mB=34, pw=W-mL-mR, ph=H-mT-mB;
+    // reserve a FIXED width for end-of-curve labels while any are emphasized, so
+    // toggling acequias doesn't stretch/shrink the horizontal scale
+    var labelSpace=emphNames.length?80:0;
+
+    var tstep=chooseTimeStep(domEnd-domStart);
+    var mBx = tstep.type==="month" ? 58 : 46;   // rotated-label room ("Jan '26" is the longest)
+    var mL=Math.max(42,Math.min(92,Math.round(32+yLabelChars*6.6)));       // fit tick labels + axis title
+    var mR=14+labelSpace, mT=12, mB=mBx, pw=W-mL-mR, ph=H-mT-mB;
     function px(ms){ return mL+(domEnd===domStart?0:(ms-domStart)/(domEnd-domStart))*pw; }
     function py(v){ if(state.scale==="log"){var l0=Math.log10(ymin),l1=Math.log10(ymax);return mT+ph-(Math.log10(v)-l0)/(l1-l0)*ph;} return mT+ph-(v-ymin)/(ymax-ymin)*ph; }
 
-    var span=domEnd-domStart, parts=[];
+    var parts=[];
     parts.push('<g class="axis">');
-    var yt=state.scale==="log"?logTicks(ymin,ymax):linTicks(ymin,ymax,6);
     yt.forEach(function(t){ var y=py(t); if(y<mT-1||y>mT+ph+1)return;
       parts.push('<line x1="'+mL+'" x2="'+(mL+pw)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>');
-      parts.push('<text x="'+(mL-8)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end">'+fmt(t)+'</text>'); });
-    var target=Math.min(9,Math.max(3,Math.round(pw/95)));
-    var tk=timeTicks(domStart,domEnd,target);
+      parts.push('<text x="'+(mL-8)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end">'+fmtTickY(t,ydec)+'</text>'); });
+    var tk=timeTicks(domStart,domEnd);
     tk.ticks.forEach(function(d){ var x=px(d.getTime());
       if(x<mL-0.5||x>mL+pw+0.5)return;
       parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+mT+'" y2="'+(mT+ph)+'" opacity="0.55"/>');
-      parts.push('<text x="'+x.toFixed(1)+'" y="'+(mT+ph+16)+'" text-anchor="middle">'+fmtTick(d,tk.step.type)+'</text>'); });
+      var yb=mT+ph+8;
+      parts.push('<text transform="rotate(-90 '+x.toFixed(1)+' '+yb+')" x="'+x.toFixed(1)+'" y="'+yb+'" text-anchor="end" dy="0.32em">'+fmtTick(d,tk.step.type)+'</text>'); });
     parts.push('<line class="domain" x1="'+mL+'" x2="'+mL+'" y1="'+mT+'" y2="'+(mT+ph)+'"/>');
     parts.push('<line class="domain" x1="'+mL+'" x2="'+(mL+pw)+'" y1="'+(mT+ph)+'" y2="'+(mT+ph)+'"/>');
     parts.push('<text class="axis-title" transform="translate(14,'+(mT+ph/2)+') rotate(-90)" text-anchor="middle">'+yTitle()+'</text>');
@@ -629,11 +667,36 @@
         s+='<circle cx="'+px(tWin[i].getTime()).toFixed(1)+'" cy="'+py(y).toFixed(1)+'" r="'+r+'" fill="'+fill+'"/>'; }
       return s; }
     var hasEmph=state.emph.size>0;
+    var gapThresh=0.05*(domEnd-domStart);   // a no-data gap wider than 5% of the window is drawn dashed
+
+    // For cumulative (AF / AF-per-acre) curves, split the line into solid runs and
+    // dashed runs, dashing the spans that bridge a big no-data gap (interpolation).
+    function afSplitPaths(sr){
+      var real=[]; for(var i=0;i<sr.cfs.length;i++){ var c=sr.cfs[i]; if(c!=null&&isFinite(c)) real.push(i); }
+      var dash=new Array(sr.disp.length);
+      for(var k=0;k+1<real.length;k++){ var a=real[k], b=real[k+1];
+        if(tWin[b].getTime()-tWin[a].getTime() > gapThresh){ for(var j=a;j<b;j++) dash[j]=true; } }
+      var sP="",dP="",sOn=false,dOn=false;
+      for(var i=0;i+1<sr.disp.length;i++){
+        var y0=sr.disp[i], y1=sr.disp[i+1];
+        if(y0==null||!isFinite(y0)||y1==null||!isFinite(y1)||(state.scale==="log"&&(y0<=0||y1<=0))){ sOn=dOn=false; continue; }
+        var X0=px(tWin[i].getTime()).toFixed(1),Y0=py(y0).toFixed(1),X1=px(tWin[i+1].getTime()).toFixed(1),Y1=py(y1).toFixed(1);
+        if(dash[i]){ if(!dOn){ dP+="M"+X0+" "+Y0+" "; dOn=true; } dP+="L"+X1+" "+Y1+" "; sOn=false; }
+        else { if(!sOn){ sP+="M"+X0+" "+Y0+" "; sOn=true; } sP+="L"+X1+" "+Y1+" "; dOn=false; }
+      }
+      return {solid:sP, dashed:dP};
+    }
+
     function draw(list,emph){ list.forEach(function(sr){
       var stroke=(hasEmph&&!emph)?"var(--grey-line)":sr.col, w=emph?2.6:(hasEmph?1.1:1.7), op=(hasEmph&&!emph)?0.85:1;
-      if(dotMode) w=emph?2.0:(hasEmph?1.0:1.3);    // thinner line so the dots read clearly
-      parts.push('<path d="'+pathFor(sr.disp,dotMode)+'" fill="none" stroke="'+stroke+'" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round" opacity="'+op+'"/>');
-      if(dotMode&&drawDots){ parts.push('<g opacity="'+op+'">'+dotsFor(sr.disp,stroke,emph?2.4:1.6)+'</g>'); }
+      if(dotMode){ w=emph?2.0:(hasEmph?1.0:1.3);    // thinner line so the dots read clearly
+        parts.push('<path d="'+pathFor(sr.disp,true)+'" fill="none" stroke="'+stroke+'" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round" opacity="'+op+'"/>');
+        if(drawDots){ parts.push('<g opacity="'+op+'">'+dotsFor(sr.disp,stroke,emph?2.4:1.6)+'</g>'); }
+      } else {
+        var sp=afSplitPaths(sr);
+        if(sp.solid)  parts.push('<path d="'+sp.solid +'" fill="none" stroke="'+stroke+'" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round" opacity="'+op+'"/>');
+        if(sp.dashed) parts.push('<path d="'+sp.dashed+'" fill="none" stroke="'+stroke+'" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4" opacity="'+op+'"/>');
+      }
     }); }
     parts.push('<clipPath id="plotclip"><rect x="'+mL+'" y="'+mT+'" width="'+pw+'" height="'+ph+'"/></clipPath>');
     parts.push('<g clip-path="url(#plotclip)">');
@@ -683,7 +746,8 @@
         for(var i=sr.disp.length-1;i>=0;i--){ var y=sr.disp[i];
           if(y!=null&&isFinite(y)&&!(state.scale==="log"&&y<=0)){ li=i; break; } }
         if(li<0)return;
-        labels.push({x:px(tWin[li].getTime()),y:py(sr.disp[li]),text:sr.name,col:sr.col});
+        var lbl=sr.name.length>10 ? sr.name.slice(0,10)+"…" : sr.name;   // keep the scale stable
+        labels.push({x:px(tWin[li].getTime()),y:py(sr.disp[li]),text:lbl,col:sr.col});
       });
       labels.sort(function(a,b){return a.y-b.y;});
       for(var i=1;i<labels.length;i++){ if(labels[i].y<labels[i-1].y+13) labels[i].y=labels[i-1].y+13; }
@@ -699,20 +763,17 @@
   }
 
   function yTitle(){
-    if(state.measure==="afac") return "cumulative acre feet per irrigable acre since "+(state.winStart?fmtDateShort(state.winStart):"start");
-    if(state.measure==="af") return "cumulative volume — AF since "+(state.winStart?fmtDateShort(state.winStart):"start");
-    return "discharge (cfs)";
+    if(state.measure==="afac") return "Cumulative acre feet per irrigable acre since "+(state.winStart?fmtDateShort(state.winStart):"start");
+    if(state.measure==="af") return "Cumulative volume — AF since "+(state.winStart?fmtDateShort(state.winStart):"start");
+    return "Flow (CFS)";
   }
-  function renderStatus(){
-    var el=document.getElementById("statusline");
-    function k(a,b){return '<span><span class="seg-k">'+a+'</span> <b>'+b+'</b></span>';}
-    var nvis=data.names.filter(function(n){return state.visible.has(n);}).length;
-    var win=(state.winStart&&state.winEnd)?(fmtDateShort(state.winStart)+"→"+fmtDateShort(state.winEnd)):"all";
-    var mlabel={cfs:"discharge (cfs)",af:"total (AF)",afac:"AF per irrigable acre"}[state.measure];
-    var bits=[k("measure",mlabel)];
-    bits.push(k("window",win)); bits.push(k("gauges",nvis+"/"+data.names.length));
-    el.innerHTML=bits.join("");
+  function updatePresetButtons(){
+    var box=document.getElementById("presets"); if(!box) return;
+    box.querySelectorAll("button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-w")===state.winPreset ? "true":"false");
+    });
   }
+  function renderStatus(){ updatePresetButtons(); }
 
   // ---------- hover ----------
   function setupHover(){
@@ -731,12 +792,12 @@
       var X=geom.px(geom.tWin[i].getTime());
       cross.style.display=""; cross.querySelector(".crosshair").setAttribute("x1",X.toFixed(1)); cross.querySelector(".crosshair").setAttribute("x2",X.toFixed(1));
       var rows=[],ptsHTML="";
-      geom.series.forEach(function(sr){ var y=sr.disp[i];
+      geom.series.forEach(function(sr){ var y=interpAt(sr.disp,geom.tWin,i);
         if(y!=null&&isFinite(y)&&!(state.scale==="log"&&y<=0)){ var Y=geom.py(y); ptsHTML+='<circle class="ptmark" cx="'+X.toFixed(1)+'" cy="'+Y.toFixed(1)+'" r="3.4" fill="'+sr.col+'"/>'; }
         rows.push({name:sr.name,col:sr.col,val:y,cfs:sr.cfs[i],emph:sr.emph}); });
       pts.innerHTML=ptsHTML;
       rows.sort(function(a,b){ if(a.emph!==b.emph)return a.emph?-1:1; return (b.val==null?-Infinity:b.val)-(a.val==null?-Infinity:a.val); });
-      var unit=state.measure==="afac"?" AF/ac":state.measure==="af"?" AF":" cfs";
+      var unit=state.measure==="afac"?" AF/ac":state.measure==="af"?" AF":" CFS";
       var html='<div class="tt-x">'+fmtFull(geom.tWin[i])+'</div>';
       rows.forEach(function(r){ var cls=geom.hasEmph?(r.emph?"":"dim"):"";
         html+='<div class="tt-row '+cls+'"><div class="tt-left"><span class="swatch" style="background:'+r.col+'"></span><span class="tt-name">'+r.name+'</span></div><span class="tt-val">'+fmt(r.val)+unit+'</span></div>'; });
@@ -789,10 +850,6 @@
   }
 
   function applyMeasureUI(){
-    document.getElementById("measureHint").textContent =
-        state.measure==="afac" ? "Cumulative acre-feet delivered per irrigable acre since the window start (hover the button for the acres used)."
-      : state.measure==="af"   ? "Cumulative acre-feet past each gauge since the window start (∫ cfs·dt ÷ 43,560)."
-      :                          "Instantaneous flow rate at each gauge.";
     state.ymax=null; var ym=document.getElementById("ymaxVal"); if(ym)ym.value="";
     state.ymin=null; var yn=document.getElementById("yminVal"); if(yn)yn.value="";
     buildSeriesList();
@@ -808,9 +865,9 @@
     var inp=document.getElementById("startDt"), inp2=document.getElementById("endDt");
     inp.min=inp2.min=toInput(ex.min); inp.max=inp2.max=toInput(ex.max);
     if(state.winStart==null){
-      var sw=seasonWindow();                     // first load: default to the irrigation season
-      if(sw){ setWindow(sw.start,sw.end); state.winAll=false; state.winSeason=true; }
-      else  { setWindow(ex.min,ex.max); state.winAll=true; state.winSeason=false; }   // year not listed -> full extent
+      var st=new Date(ex.max.getTime()-864e5);   // first load: last 24 h
+      if(st<ex.min)st=ex.min;
+      setWindow(st,ex.max); state.winAll=false; state.winSeason=false; state.winPreset="1";
     } else {
       var s=state.winStart; if(s<ex.min||s>ex.max) s=ex.min;
       setWindow(s, ex.max);                      // keep the user's start; extend end to the latest data
@@ -853,8 +910,10 @@
     if(state.year){
       lines=["Showing "+state.year+" — a completed year (static)."];
     } else {
-      lines=['GitHub refreshes data a few times per day. For the most recent gauge readings, go to <a href="https://meas.ose.state.nm.us/district6.jsp" target="_blank" rel="noopener">OSE District 6</a>.'];
-      if(lastModified){ var lm=new Date(lastModified); if(!isNaN(lm)) lines.push("Last updated "+clock(lm)+"."); }
+      var parts=["GitHub refreshes data a few times per day."];
+      if(lastModified){ var lm=new Date(lastModified); if(!isNaN(lm)) parts.push("Last updated "+clock(lm)+"."); }
+      parts.push('For the most recent gauge readings, go to <a href="https://meas.ose.state.nm.us/district6.jsp" target="_blank" rel="noopener">OSE District 6</a>.');
+      lines=[parts.join(" ")];
     }
     el.innerHTML=lines.join("<br>");
   }
@@ -945,7 +1004,7 @@
     var btn=document.querySelector('#measureSeg [data-v="afac"]'); if(!btn) return;
     var lines=[];
     if(ACRES_COMMENTS.length){ lines=lines.concat(ACRES_COMMENTS); lines.push(""); }
-    ACRE_TARGETS.forEach(function(p){ if(ACRES[p[1]]!=null) lines.push(p[1]+"  "+ACRES[p[1]]); });
+    ACRE_TARGETS.forEach(function(p){ if(ACRES[p[1]]!=null){ var disp=(p[1]==="IndiosAdj")?"Indios":p[1]; lines.push(disp+"  "+ACRES[p[1]]); } });
     btn.setAttribute("data-info", lines.join("\n"));
   }
   function parseSchedule(text){
@@ -1015,7 +1074,7 @@
         state.activeCycle=c.file;
         var st=new Date(c.start.replace(" ","T")), en=new Date(c.end.replace(" ","T")), now=new Date();
         if(en>now) en=now;                       // ongoing cycle: end the axis at "now"
-        setWindow(st,en); state.winAll=false; state.winSeason=false;
+        setWindow(st,en); state.winAll=false; state.winSeason=false; state.winPreset=null;
         updateMeasureAvailability();
         rebuildCycleButtons(); render();
       })
@@ -1077,14 +1136,15 @@
     document.getElementById("presets").querySelectorAll("button").forEach(function(b){
       b.addEventListener("click",function(){ var w=b.getAttribute("data-w"), ex=dataExtent();
         clearSchedule(); rebuildCycleButtons();   // any window preset turns off an active cycle
+        state.winPreset=w;
         if(w==="all"){ setWindow(ex.min,ex.max); state.winAll=true; state.winSeason=false; }
         else if(w==="season"){ var sw=seasonWindow();
           if(sw){ setWindow(sw.start,sw.end); state.winAll=false; state.winSeason=true; }
           else { setWindow(ex.min,ex.max); state.winAll=true; state.winSeason=false; } }   // year not listed -> full extent
         else { var days=Number(w); var start=new Date(ex.max.getTime()-days*864e5); if(start<ex.min)start=ex.min; setWindow(start,ex.max); state.winAll=false; state.winSeason=false; }
         updateMeasureAvailability(); render(); }); });
-    document.getElementById("startDt").addEventListener("change",function(e){ var d=new Date(e.target.value); if(!isNaN(d)){state.winStart=d;state.winAll=false;state.winSeason=false;updateMeasureAvailability();render();} });
-    document.getElementById("endDt").addEventListener("change",function(e){ var d=new Date(e.target.value); if(!isNaN(d)){state.winEnd=d;state.winAll=false;state.winSeason=false;updateMeasureAvailability();render();} });
+    document.getElementById("startDt").addEventListener("change",function(e){ var d=new Date(e.target.value); if(!isNaN(d)){state.winStart=d;state.winAll=false;state.winSeason=false;state.winPreset=null;updateMeasureAvailability();render();} });
+    document.getElementById("endDt").addEventListener("change",function(e){ var d=new Date(e.target.value); if(!isNaN(d)){state.winEnd=d;state.winAll=false;state.winSeason=false;state.winPreset=null;updateMeasureAvailability();render();} });
 
     document.getElementById("showAll").addEventListener("click",function(){state.visible=new Set(data.names);buildSeriesList();render();});
     document.getElementById("showNone").addEventListener("click",function(){state.visible=new Set();buildSeriesList();render();});
