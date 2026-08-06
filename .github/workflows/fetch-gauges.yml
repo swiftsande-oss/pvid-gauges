@@ -1,11 +1,10 @@
 name: Fetch OSE gauges
 
-# Runs every 30 minutes, around the clock. The gauges themselves only report
+# Runs every 5 hrs: 5:10, 10:10, etc for now. The gauges themselves only report
 # every 15 minutes, so this keeps the published data at most ~30 min behind.
 on:
   schedule:
-#    - cron: "7,37 * * * *"
-    - cron: "9 */5 * * *"
+    - cron: "10 */5 * * *"
   workflow_dispatch: {}         # manual "Run workflow" button on the Actions tab
 
 permissions:
