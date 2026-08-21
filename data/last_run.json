@@ -1,136 +1,135 @@
 {
-  "run_utc": "2026-08-21T01:51:07Z",
+  "run_utc": "2026-08-21T05:41:16Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
-      "added": 20,
-      "latest": "2026-08-20 19:15",
+      "added": 16,
+      "latest": "2026-08-20 23:15",
       "ok": true
     },
     "High Line": {
       "id": 22,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 11,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Upper Consolidated": {
       "id": 43,
-      "added": 14,
-      "latest": "2026-08-20 19:15",
+      "added": 7,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "Lower Consolidated": {
       "id": 28,
-      "added": 18,
-      "latest": "2026-08-20 19:15",
+      "added": 9,
+      "latest": "2026-08-20 21:45",
       "ok": true
     },
     "Nueva": {
       "id": 31,
-      "added": 15,
-      "latest": "2026-08-20 19:00",
+      "added": 9,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Llano": {
       "id": 27,
-      "added": 20,
-      "latest": "2026-08-20 18:45",
+      "added": 12,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "Comunidad": {
       "id": 6,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Ortiz": {
       "id": 33,
-      "added": 16,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Gardunos": {
       "id": 21,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Jose G. Ortiz": {
       "id": 24,
-      "added": 20,
-      "latest": "2026-08-20 18:45",
+      "added": 12,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "Cano": {
       "id": 5,
-      "added": 16,
-      "latest": "2026-08-20 19:00",
+      "added": 3,
+      "latest": "2026-08-20 19:45",
       "ok": true
     },
     "Rincon": {
       "id": 39,
-      "added": 17,
-      "latest": "2026-08-20 19:00",
+      "added": 10,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Las Joyas": {
       "id": 26,
-      "added": 14,
-      "latest": "2026-08-20 18:45",
+      "added": 6,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Trujillos": {
       "id": 42,
-      "added": 18,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Barranco Alto": {
       "id": 3,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Larga": {
       "id": 25,
-      "added": 18,
-      "latest": "2026-08-20 18:45",
+      "added": 12,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "Ancon de Jacona": {
       "id": 1,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Barranco": {
       "id": 2,
-      "added": 22,
-      "latest": "2026-08-20 19:15",
-      "ok": true
+      "ok": false,
+      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=2&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
     },
     "Otra Vanda": {
       "id": 45,
-      "added": 7,
-      "latest": "2026-08-20 19:00",
+      "added": 9,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "Rancho": {
       "id": 38,
-      "added": 20,
-      "latest": "2026-08-20 19:00",
+      "added": 11,
+      "latest": "2026-08-20 22:30",
       "ok": true
     },
     "Indios": {
       "id": 23,
-      "added": 18,
-      "latest": "2026-08-20 18:45",
+      "added": 12,
+      "latest": "2026-08-20 22:15",
       "ok": true
     },
     "San Ildefonso": {
       "id": 41,
-      "added": 19,
-      "latest": "2026-08-20 19:00",
+      "added": 12,
+      "latest": "2026-08-20 22:30",
       "ok": true
     }
   }
