@@ -4,7 +4,7 @@ name: Fetch OSE gauges
 # every 15 minutes, so this keeps the published data at most ~30 min behind.
 on:
   schedule:
-    - cron: "10 */5 * * *"
+    - cron: "14,34,54 * * * *"
   workflow_dispatch: {}         # manual "Run workflow" button on the Actions tab
 
 permissions:
