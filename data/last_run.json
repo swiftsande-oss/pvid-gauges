@@ -1,99 +1,99 @@
 {
-  "run_utc": "2026-08-22T21:33:49Z",
+  "run_utc": "2026-08-22T21:51:47Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
-      "added": 0,
-      "latest": "2026-08-22 14:15",
+      "added": 4,
+      "latest": "2026-08-22 15:15",
       "ok": true
     },
     "High Line": {
       "id": 22,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Upper Consolidated": {
       "id": 43,
-      "added": 3,
+      "added": 0,
       "latest": "2026-08-22 15:21",
       "ok": true
     },
     "Lower Consolidated": {
       "id": 28,
-      "added": 4,
+      "added": 0,
       "latest": "2026-08-22 15:15",
       "ok": true
     },
     "Nueva": {
       "id": 31,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Llano": {
       "id": 27,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 14:45",
       "ok": true
     },
     "Comunidad": {
       "id": 6,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Ortiz": {
       "id": 33,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Gardunos": {
       "id": 21,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Jose G. Ortiz": {
       "id": 24,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 14:45",
       "ok": true
     },
     "Cano": {
       "id": 5,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Rincon": {
       "id": 39,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Las Joyas": {
       "id": 26,
-      "added": 1,
+      "added": 0,
       "latest": "2026-08-22 15:05",
       "ok": true
     },
     "Trujillos": {
       "id": 42,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Barranco Alto": {
       "id": 3,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Larga": {
       "id": 25,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 14:45",
       "ok": true
     },
@@ -105,31 +105,31 @@
     },
     "Barranco": {
       "id": 2,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 14:45",
       "ok": true
     },
     "Otra Vanda": {
       "id": 45,
-      "added": 4,
+      "added": 0,
       "latest": "2026-08-22 15:20",
       "ok": true
     },
     "Rancho": {
       "id": 38,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     },
     "Indios": {
       "id": 23,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 14:45",
       "ok": true
     },
     "San Ildefonso": {
       "id": 41,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-22 15:00",
       "ok": true
     }
