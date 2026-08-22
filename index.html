@@ -910,7 +910,7 @@
     if(state.year){
       lines=["Showing "+state.year+" — a completed year (static)."];
     } else {
-      var parts=["GitHub refreshes data a few times per day."];
+      var parts=["GitHub should refresh data three times per hour."];
       if(lastModified){ var lm=new Date(lastModified); if(!isNaN(lm)) parts.push("Last updated "+clock(lm)+"."); }
       parts.push('For the most recent gauge readings, go to <a href="https://meas.ose.state.nm.us/district6.jsp" target="_blank" rel="noopener">OSE District 6</a>.');
       lines=[parts.join(" ")];
