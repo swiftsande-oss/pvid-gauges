@@ -1,10 +1,10 @@
 {
-  "run_utc": "2026-08-24T14:56:58Z",
+  "run_utc": "2026-08-24T15:53:27Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
       "added": 4,
-      "latest": "2026-08-24 08:15",
+      "latest": "2026-08-24 09:15",
       "ok": true
     },
     "High Line": {
@@ -15,13 +15,13 @@
     },
     "Upper Consolidated": {
       "id": 43,
-      "added": 1,
+      "added": 0,
       "latest": "2026-08-24 07:30",
       "ok": true
     },
     "Lower Consolidated": {
       "id": 28,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:30",
       "ok": true
     },
@@ -33,7 +33,7 @@
     },
     "Llano": {
       "id": 27,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
@@ -57,7 +57,7 @@
     },
     "Jose G. Ortiz": {
       "id": 24,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
@@ -75,7 +75,7 @@
     },
     "Las Joyas": {
       "id": 26,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 08:09",
       "ok": true
     },
@@ -93,25 +93,25 @@
     },
     "Larga": {
       "id": 25,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Ancon de Jacona": {
       "id": 1,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Barranco": {
       "id": 2,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Otra Vanda": {
       "id": 45,
-      "added": 2,
+      "added": 0,
       "latest": "2026-08-24 07:45",
       "ok": true
     },
