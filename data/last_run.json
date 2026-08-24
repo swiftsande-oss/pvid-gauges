@@ -1,10 +1,10 @@
 {
-  "run_utc": "2026-08-24T21:14:31Z",
+  "run_utc": "2026-08-24T21:54:26Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
-      "added": 0,
-      "latest": "2026-08-24 14:15",
+      "added": 4,
+      "latest": "2026-08-24 15:15",
       "ok": true
     },
     "High Line": {
