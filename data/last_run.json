@@ -1,16 +1,17 @@
 {
-  "run_utc": "2026-08-25T14:20:49Z",
+  "run_utc": "2026-08-25T15:21:56Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
       "added": 4,
-      "latest": "2026-08-25 07:15",
+      "latest": "2026-08-25 08:15",
       "ok": true
     },
     "High Line": {
       "id": 22,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=22&status=Y&type=S&dist=6&basin=NPT (Caused by ReadTimeoutError(\"HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Read timed out. (read timeout=30)\"))"
+      "added": 1,
+      "latest": "2026-08-24 07:45",
+      "ok": true
     },
     "Upper Consolidated": {
       "id": 43,
@@ -20,14 +21,14 @@
     },
     "Lower Consolidated": {
       "id": 28,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 82,
+      "latest": "2026-08-25 08:45",
       "ok": true
     },
     "Nueva": {
       "id": 31,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 1,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Llano": {
@@ -38,20 +39,20 @@
     },
     "Comunidad": {
       "id": 6,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 2,
+      "latest": "2026-08-24 08:00",
       "ok": true
     },
     "Ortiz": {
       "id": 33,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 1,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Gardunos": {
       "id": 21,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 2,
+      "latest": "2026-08-24 08:00",
       "ok": true
     },
     "Jose G. Ortiz": {
@@ -62,14 +63,14 @@
     },
     "Cano": {
       "id": 5,
-      "added": 0,
-      "latest": "2026-08-24 07:15",
+      "added": 2,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Rincon": {
       "id": 39,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 2,
+      "latest": "2026-08-24 08:00",
       "ok": true
     },
     "Las Joyas": {
@@ -80,14 +81,14 @@
     },
     "Trujillos": {
       "id": 42,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 1,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Barranco Alto": {
       "id": 3,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 1,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Larga": {
@@ -116,8 +117,8 @@
     },
     "Rancho": {
       "id": 38,
-      "added": 0,
-      "latest": "2026-08-24 07:23",
+      "added": 2,
+      "latest": "2026-08-24 07:45",
       "ok": true
     },
     "Indios": {
@@ -128,8 +129,8 @@
     },
     "San Ildefonso": {
       "id": 41,
-      "added": 0,
-      "latest": "2026-08-24 07:30",
+      "added": 2,
+      "latest": "2026-08-24 08:00",
       "ok": true
     }
   }
