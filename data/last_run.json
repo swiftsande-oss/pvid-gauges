@@ -1,116 +1,137 @@
 {
-  "run_utc": "2026-09-05T10:30:45Z",
+  "run_utc": "2026-09-05T13:30:39Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
-      "added": 16,
-      "latest": "2026-09-05 03:15",
+      "added": 12,
+      "latest": "2026-09-05 06:15",
       "ok": true
     },
     "High Line": {
       "id": 22,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=22&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 33,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Upper Consolidated": {
       "id": 43,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=43&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 32,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Lower Consolidated": {
       "id": 28,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=28&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 29,
+      "latest": "2026-09-05 06:15",
+      "ok": true
     },
     "Nueva": {
       "id": 31,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=31&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 28,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Llano": {
       "id": 27,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=27&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 29,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Comunidad": {
       "id": 6,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=6&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 25,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Ortiz": {
       "id": 33,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=33&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 33,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Gardunos": {
       "id": 21,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=21&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 31,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Jose G. Ortiz": {
       "id": 24,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=24&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 32,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Cano": {
       "id": 5,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=5&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 22,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Rincon": {
       "id": 39,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=39&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 32,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Las Joyas": {
       "id": 26,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=26&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 25,
+      "latest": "2026-09-05 06:38",
+      "ok": true
     },
     "Trujillos": {
       "id": 42,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=42&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 33,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Barranco Alto": {
       "id": 3,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=3&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 24,
+      "latest": "2026-09-05 06:45",
+      "ok": true
     },
     "Larga": {
       "id": 25,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=25&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 33,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Ancon de Jacona": {
       "id": 1,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=1&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 31,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Barranco": {
       "id": 2,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=2&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 32,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Otra Vanda": {
       "id": 45,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=45&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 31,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Rancho": {
       "id": 38,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=38&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 32,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "Indios": {
       "id": 23,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=23&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 33,
+      "latest": "2026-09-05 06:30",
+      "ok": true
     },
     "San Ildefonso": {
       "id": 41,
-      "ok": false,
-      "error": "HTTPSConnectionPool(host='meas.ose.state.nm.us', port=443): Max retries exceeded with url: /site.jsp?id=41&status=Y&type=S&dist=6&basin=NPT (Caused by NewConnectionError(\"HTTPSConnection(host='meas.ose.state.nm.us', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))"
+      "added": 30,
+      "latest": "2026-09-05 06:15",
+      "ok": true
     }
   }
 }
