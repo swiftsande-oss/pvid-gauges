@@ -1,0 +1,7 @@
+backfill*/
+revisionHistory/
+miscellaneous/
+__pycache__/
+*.pyc
+*.tmp
+.vscode/
