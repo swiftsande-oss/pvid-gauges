@@ -1,13 +1,8 @@
 # Graphical display of acequia gauges downstream of Nambe Reservoir in northern New Mexico. 
 
-Feature planning by Greg Swift. 
-Coding by Anthropic Claude Opus 4.8.
+This website was created using a human-in-the-loop AI approach.
 
-See Project_notes.md for explanation of overall architecture.
+Project design and code review: Gregory W. Swift
+Code generation: Anthropic's Claude Opus 4.8.
 
-Workflow routine in VSCode:
-    Remember that GitHub owns the \data files, while I own the *.html, *.md, and *.py files, and the info folder.  
-        (Other folders, such as revisionHistory, are ignored by GitHub.)
-    Therefore, for local work updating the website with updated gauge data:
-    Pull → edit my files → commit → pull again (the repo Action may have committed new data while I worked) → push
-
+See PROJECT_NOTES.md for explanation of overall architecture.
