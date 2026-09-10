@@ -110,6 +110,8 @@
   .emptynote{padding:40px 16px;text-align:center;color:var(--muted);font-size:13px}
   footer{margin-top:24px;border-top:1px solid var(--hair);padding-top:12px;font-size:11.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   footer code{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .flinks a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .flinks a:hover{text-decoration:underline}
   *:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 
   @media (max-width:1080px){
@@ -128,7 +130,7 @@
   <header class="masthead">
     <div>
       <p class="eyebrow">Rio Nambé · Rio Pojoaque</p>
-      <h1>PVID Gauge Explorer (Evaluation Version 3.1.1)</h1>
+      <h1>PVID Gauge Explorer, Version 1.1.1</h1>
     </div>
     <div class="right" id="dataStamp">no data loaded</div>
   </header>
@@ -161,7 +163,7 @@
       <div class="group">
         <span class="label">Data adjustments</span>
         <div class="seg" id="adjustSeg" role="group" aria-label="Adjust data">
-          <button type="button" data-v="none" aria-pressed="true" data-info="Raw OSE and USGS data">None</button>
+          <button type="button" data-v="none" aria-pressed="true" data-info="Raw OSE and USGS provisional data">None</button>
           <button type="button" data-v="adjust" data-info="NambePuebloNet = HighLine + UpperConsol − Nueva − Llano − Comunidad&#10;ConsolNet = UpperConsol − Nueva − Llano − Comunidad&#10;IndiosAdj = 1.0724 × (Indios cfs − 0.135 cfs)">Adjust</button>
         </div>
         <p class="hint">Hover a button to see what it does.</p>
@@ -225,7 +227,13 @@
       </div>
       <footer>
         <span id="footnote">Hover the plot to read exact values.</span>
-        <span><code>Based on OSE provisional data. Capability design by Greg Swift. Programming by Anthropic Claude Opus 4.8.</code></span>
+        <span><code>Based on OSE and USGS provisional data.</code></span>
+        <span class="flinks">Links to:
+          <a href="info/gaugeLocations.pdf" target="_blank" rel="noopener">Maps</a> ·
+          <a href="REPLACE_WITH_TUTORIAL_URL" target="_blank" rel="noopener">Tutorial</a> ·
+          <a href="info/MoreInfo.html" target="_blank" rel="noopener">MoreInfo</a> ·
+          <a href="info/License.html" target="_blank" rel="noopener">License</a>
+        </span>
       </footer>
     </main>
 
@@ -910,7 +918,7 @@
     if(state.year){
       lines=["Showing "+state.year+" — a completed year (static)."];
     } else {
-      var parts=["GitHub should refresh data three times per hour."];
+      var parts=["GitHub refreshes data a few times per day."];
       if(lastModified){ var lm=new Date(lastModified); if(!isNaN(lm)) parts.push("Last updated "+clock(lm)+"."); }
       parts.push('For the most recent gauge readings, go to <a href="https://meas.ose.state.nm.us/district6.jsp" target="_blank" rel="noopener">OSE District 6</a>.');
       lines=[parts.join(" ")];

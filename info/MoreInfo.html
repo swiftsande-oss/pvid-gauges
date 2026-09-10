@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PVID Gauge Explorer — More Information</title>
+<style>
+  :root{
+    --paper:#fbfaf7; --ink:#242a2e; --muted:#5c666c; --faint:#8a949a;
+    --accent:#3f6f52; --hair:#e6e2da;
+  }
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;}
+  main{max-width:640px;margin:0 auto;padding:38px 22px 60px;}
+  h1{font-size:20px;margin:0 0 4px;}
+  .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 18px;}
+  h2{font-size:15.5px;margin:26px 0 6px;color:var(--ink);}
+  p{margin:8px 0;color:var(--muted);}
+  ul{margin:8px 0;padding-left:20px;color:var(--muted);}
+  li{margin:7px 0;}
+  .close{margin-top:30px;font-weight:600;color:var(--ink);}
+  a{color:var(--accent);}
+  footer{margin-top:34px;border-top:1px solid var(--hair);padding-top:12px;
+    font-size:11.5px;color:var(--faint);}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">PVID Gauge Explorer</p>
+  <h1>More information</h1>
+
+  <h2>What does “provisional” data mean?</h2>
+  <p>This website harvests data from USGS and OSE gauge websites that are marked
+  “provisional.” At the end of each year, those agencies may adjust the data to
+  account for calibration changes, known instrument problems, debris stuck in
+  gauges, and the like — but the PVID Gauge Explorer will not be updated with
+  such changes. If a gauge sends no reading to OSE for a long time, the Gauge
+  Explorer assumes a linear interpolation between readings.</p>
+
+  <h2>What are the units of water flow?</h2>
+  <p>CFS = cubic foot per second.  AF = acre-foot = 43,560 cubic feet.
+    If one CFS flows steadily for 24 hours, a total of 1.98 acre-feet has passed.
+  </p>
+
+  <h2>How are the data manipulated in the graph?</h2>
+  <ul>
+    <li><strong>Data adjustments = None</strong> and <strong>Graph = Flow (CFS)</strong>
+    shows exactly the data harvested from USGS and OSE.</li>
+    <li><strong>Data adjustments = Adjust:</strong> hover your mouse over this
+    button in the explorer to see what it does.</li>
+    <li><strong>Graph = Total (AF)</strong> adds up each gauge’s CFS during the
+    displayed time interval, showing the accumulated total as a function of time.
+    A linear interpolation between gauge readings is used. A long interval of
+    “no reading” of a gauge is shown as a dashed line on the graph.</li>
+  </ul>
+
+  <p class="close">None of these manipulations changes the CFS table itself —
+  only how the data are displayed.</p>
+
+  <footer>Return to the explorer tab to keep exploring.</footer>
+</main>
+</body>
+</html>
