@@ -108,7 +108,7 @@
   .tt-row.dim{opacity:.5}
 
   .emptynote{padding:40px 16px;text-align:center;color:var(--muted);font-size:13px}
-  footer{margin-top:24px;border-top:1px solid var(--hair);padding-top:12px;font-size:11.5px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer{margin-top:24px;border-top:1px solid var(--hair);padding-top:12px;font-size:11.5px;color:var(--faint);display:flex;flex-direction:column;align-items:flex-start;gap:5px}
   footer code{font-family:var(--mono);font-size:11px;color:var(--muted)}
   .flinks a{color:var(--accent);text-decoration:none;margin:0 2px}
   .flinks a:hover{text-decoration:underline}
@@ -164,9 +164,10 @@
         <span class="label">Data adjustments</span>
         <div class="seg" id="adjustSeg" role="group" aria-label="Adjust data">
           <button type="button" data-v="none" aria-pressed="true" data-info="Raw OSE and USGS provisional data">None</button>
-          <button type="button" data-v="adjust" data-info="NambePuebloNet = HighLine + UpperConsol − Nueva − Llano − Comunidad&#10;ConsolNet = UpperConsol − Nueva − Llano − Comunidad&#10;IndiosAdj = 1.0724 × (Indios cfs − 0.135 cfs)">Adjust</button>
+          <button type="button" data-v="adjust" data-info="">Adjust</button>
         </div>
-        <p class="hint">Hover a button to see what it does.</p>
+        <p class="hint" id="adjustHint">Hover a button to see what it does.</p>
+        <p class="hint" id="adjustNote" style="display:none"></p>
       </div>
 
       <div class="group">
@@ -209,6 +210,9 @@
           <label for="endDt">End</label>
           <input type="datetime-local" id="endDt" />
         </div>
+        <p class="hint" id="seasonTotalsRow" style="display:none;margin-top:10px">
+          <a href="#" id="seasonTotalsLink" class="flinks" style="font-weight:600">Season totals →</a>
+        </p>
       </div>
 
       <div class="group" id="scheduleGroup" style="display:none">
@@ -268,6 +272,23 @@
     var hue=(i*137.508)%360, sat=(i%2?56:70), lt=(i%3?43:53);
     return "hsl("+hue.toFixed(0)+" "+sat+"% "+lt+"%)";
   });
+  // Stable color per curve, keyed to the RAW gauge identity so colors don't shift
+  // when Adjust is toggled: a net inherits its source gauge's color.
+  var COLOR_SRC={};   // derived from the loaded adjustments: series name -> source gauge (for stable color)
+  function rebuildColorSrc(){
+    COLOR_SRC={};
+    if(!adjustDefs) return;
+    adjustDefs.series.forEach(function(s){
+      if(s.type==="net"){ var p=s.terms.filter(function(t){return t[0]>0;})[0]; if(p) COLOR_SRC[s.name]=p[1]; }
+      else if(s.type==="calib"){ COLOR_SRC[s.name]=s.gauge; }
+    });
+  }
+  function colorFor(name){
+    var src=COLOR_SRC[name]||name;
+    var ci=rawData?rawData.names.indexOf(src):-1;
+    if(ci<0) ci=data.names.indexOf(name);   // fallback
+    return PALETTE[((ci%PALETTE.length)+PALETTE.length)%PALETTE.length];
+  }
 
   var state={measure:"cfs",resample:"raw",scale:"linear",adjust:false,
              winStart:null,winEnd:null,winAll:true,winSeason:false,winPreset:null,ymax:null,ymin:null,year:null,schedule:null,activeCycle:null,visible:new Set(),emph:new Set()};
@@ -297,16 +318,14 @@
   function acresLoaded(){ for(var k in ACRES) return true; return false; }
 
 
-  // ---- ADJUST DATA: derived series, computed in-browser; the CSV is untouched.
-  var ADJ_UP="Upper Consolidated", ADJ_LO="Lower Consolidated", ADJ_IN="Indios",
-      ADJ_HL="High Line", ADJ_NU="Nueva", ADJ_LL="Llano", ADJ_CO="Comunidad",
-      ADJ_DAM="Nambe Dam Discharge";
+  // ---- ADJUST DATA: derived series defined by data/<year>adjustments.csv,
+  // computed in-browser; the CSV is untouched. adjustDefs is null when no file
+  // applies (then the Adjust button is hidden).
+  var ADJ_DAM="Nambe Dam Discharge";
+  var adjustDefs=null;   // {series:[{name,type,terms|gauge/scale/offset,hide}]}
   function computeAdjusted(raw){
-    var hasConsol = raw.cols[ADJ_UP] && raw.cols[ADJ_NU] && raw.cols[ADJ_LL] && raw.cols[ADJ_CO];
-    var hasIndios = !!raw.cols[ADJ_IN];
-    var hasNambe  = raw.cols[ADJ_HL] && raw.cols[ADJ_UP] && raw.cols[ADJ_NU] && raw.cols[ADJ_LL] && raw.cols[ADJ_CO];
+    var defs=adjustDefs?adjustDefs.series:[];
 
-    // build a linear interpolator over one gauge's real (time,value) readings
     function makeInterp(colName){
       var pts=[], col=raw.cols[colName];
       if(col){ for(var i=0;i<raw.t.length;i++){ var v=col[i]; if(v!=null&&isFinite(v)) pts.push([raw.t[i].getTime(),v]); } }
@@ -321,72 +340,56 @@
       };
     }
 
-    var cols={}, names=[];
+    var cols={}, names=[], hideSet={}, calibBySrc={};
 
-    // NambePuebloNet = HighLine + UpperConsol - Nueva - Llano - Comunidad,
-    // evaluated wherever High Line OR Upper Consolidated has a reading (the two
-    // additive terms); the missing one and the three subtractive terms are
-    // interpolated. Null only where BOTH High Line and Upper are absent. (top)
-    if(hasNambe){
-      var iHl=makeInterp(ADJ_HL), iUp=makeInterp(ADJ_UP), iNu=makeInterp(ADJ_NU), iLl=makeInterp(ADJ_LL), iCo=makeInterp(ADJ_CO);
-      var npn=new Array(raw.t.length);
-      for(var i=0;i<raw.t.length;i++){
-        var hl=raw.cols[ADJ_HL][i], up=raw.cols[ADJ_UP][i];
-        var hlOk=(hl!=null&&isFinite(hl)), upOk=(up!=null&&isFinite(up));
-        if(!hlOk && !upOk){ npn[i]=null; continue; }     // null only where both primaries are missing
-        var ms=raw.t[i].getTime();
-        var H=hlOk?hl:iHl(ms), U=upOk?up:iUp(ms), n=iNu(ms), l=iLl(ms), c=iCo(ms);
-        npn[i]=(H==null||U==null||n==null||l==null||c==null)?null:(H+U-n-l-c);
+    // nets first (pushed to the top), computed only if all their gauges are present
+    defs.forEach(function(s){
+      if(s.type==="net"){
+        if(!s.terms.every(function(t){ return raw.cols[t[1]]; })) return;
+        var interps={}; s.terms.forEach(function(t){ interps[t[1]]=makeInterp(t[1]); });
+        var pos=s.terms.filter(function(t){return t[0]>0;}).map(function(t){return t[1];});
+        var out=new Array(raw.t.length);
+        for(var i=0;i<raw.t.length;i++){
+          var hasPrimary=false;
+          for(var p=0;p<pos.length;p++){ var rv=raw.cols[pos[p]][i]; if(rv!=null&&isFinite(rv)){hasPrimary=true;break;} }
+          if(!hasPrimary){ out[i]=null; continue; }   // null only where no positive term reads
+          var ms=raw.t[i].getTime(), val=0, ok=true;
+          for(var k=0;k<s.terms.length;k++){ var v=interps[s.terms[k][1]](ms); if(v==null){ok=false;break;} val+=s.terms[k][0]*v; }
+          out[i]=ok?val:null;
+        }
+        cols[s.name]=out; names.push(s.name);
+        (s.hide||[]).forEach(function(g){hideSet[g]=true;});
+      } else if(s.type==="calib"){
+        if(!raw.cols[s.gauge]) return;
+        calibBySrc[s.gauge]=s;
+        (s.hide||[]).forEach(function(g){hideSet[g]=true;});
       }
-      cols["NambePuebloNet"]=npn; names.push("NambePuebloNet");
-    }
-
-    // ConsolNet = UpperConsol - Nueva - Llano - Comunidad, at Upper's reading
-    // times with the three subtractive gauges interpolated onto those times.
-    if(hasConsol){
-      var iUp2=makeInterp(ADJ_UP), iNu2=makeInterp(ADJ_NU), iLl2=makeInterp(ADJ_LL), iCo2=makeInterp(ADJ_CO);
-      var cn=new Array(raw.t.length);
-      for(var i=0;i<raw.t.length;i++){ var u2=raw.cols[ADJ_UP][i];
-        if(u2!=null&&isFinite(u2)){ var ms2=raw.t[i].getTime();
-          var n2=iNu2(ms2), l2=iLl2(ms2), c2=iCo2(ms2);
-          cn[i]=(n2==null||l2==null||c2==null)?null:(u2-n2-l2-c2);
-        } else cn[i]=null; }
-      cols["ConsolNet"]=cn; names.push("ConsolNet");
-    }
+    });
 
     raw.names.forEach(function(n){
-      if(hasNambe && n===ADJ_HL) return;                       // folded into NambePuebloNet
-      if(hasConsol && (n===ADJ_UP || n===ADJ_LO)) return;       // replaced by ConsolNet
-      if(hasIndios && n===ADJ_IN){
-        cols["IndiosAdj"]=raw.cols[ADJ_IN].map(function(v){
+      if(calibBySrc[n]){ var cd=calibBySrc[n];
+        cols[cd.name]=raw.cols[n].map(function(v){
           if(v==null||!isFinite(v)) return null;
-          var x=1.0724*(v-0.135); return x<0?0:x;             // zero-offset correction, floored at 0
+          var x=cd.scale*(v-cd.offset); return x<0?0:x;      // floored at 0
         });
-        names.push("IndiosAdj"); return;
+        names.push(cd.name); return;
       }
-      cols[n]=raw.cols[n]; names.push(n);                       // (Nueva, Llano, Comunidad stay)
+      if(hideSet[n]) return;                                  // folded into a net
+      cols[n]=raw.cols[n]; names.push(n);
     });
-    // keep the upstream dam reference at the very top, even though the nets were
-    // pushed on first
-    var di=names.indexOf(ADJ_DAM);
-    if(di>0){ names.splice(di,1); names.unshift(ADJ_DAM); }
+    var di=names.indexOf(ADJ_DAM); if(di>0){ names.splice(di,1); names.unshift(ADJ_DAM); }  // dam stays on top
     return {names:names, t:raw.t, cols:cols};
   }
   function migrateSet(set, toAdjust){
-    var s=new Set(set);
+    var s=new Set(set), defs=adjustDefs?adjustDefs.series:[];
     if(toAdjust){
-      if(s.has(ADJ_UP)||s.has(ADJ_LO)) s.add("ConsolNet");
-      s.delete(ADJ_UP); s.delete(ADJ_LO);
-      if(s.has(ADJ_IN)) s.add("IndiosAdj");
-      s.delete(ADJ_IN);
-      s.delete(ADJ_HL);                                         // High Line folded into NambePuebloNet
+      defs.forEach(function(d){ var hides=d.hide||[], hit=false;
+        hides.forEach(function(g){ if(s.has(g)) hit=true; });
+        if(hit) s.add(d.name);
+        hides.forEach(function(g){ s.delete(g); });
+      });
     } else {
-      if(s.has("ConsolNet")){ s.add(ADJ_UP); s.add(ADJ_LO); }
-      s.delete("ConsolNet");
-      if(s.has("IndiosAdj")) s.add(ADJ_IN);
-      s.delete("IndiosAdj");
-      if(s.has("NambePuebloNet")) s.add(ADJ_HL);
-      s.delete("NambePuebloNet");
+      defs.forEach(function(d){ if(s.has(d.name)) (d.hide||[]).forEach(function(g){ s.add(g); }); s.delete(d.name); });
     }
     return s;
   }
@@ -394,7 +397,7 @@
     if(state.adjust===on || !rawData) return;
     state.visible=migrateSet(state.visible,on);
     state.emph=migrateSet(state.emph,on);
-    if(on) state.visible.add("NambePuebloNet");                 // default-show the headline net
+    if(on && adjustDefs && adjustDefs.series[0]) state.visible.add(adjustDefs.series[0].name);   // default-show the headline series
     state.adjust=on;
     data = on ? computeAdjusted(rawData) : rawData;
     resampleCache={key:null,val:null};
@@ -568,16 +571,17 @@
       } else if(state.measure==="af"){ disp=toAF(tWin,cfs); }
       else { disp=cfs; }
       for(var k=0;k<disp.length;k++){ var y=disp[k]; if(y!=null&&isFinite(y)){ if(state.scale==="log"&&y<=0)continue; if(y<ymin)ymin=y; if(y>ymax)ymax=y; } }
-      var ci=data.names.indexOf(nm);
-      series.push({name:nm,col:PALETTE[ci%PALETTE.length],disp:disp,cfs:cfs,emph:state.emph.has(nm)});
+      series.push({name:nm,col:colorFor(nm),disp:disp,cfs:cfs,emph:state.emph.has(nm)});
     });
     // ---- schedule helpers (also used by the underlay below). Defined here so the
     // y-axis can be scaled to fit the schedule bands, not just the actual readings.
     function schedConstituents(curve){
-      if(state.adjust){
-        if(curve==="NambePuebloNet") return [[1,ADJ_HL],[1,ADJ_UP],[-1,ADJ_NU],[-1,ADJ_LL],[-1,ADJ_CO]];
-        if(curve==="ConsolNet")      return [[1,ADJ_UP],[-1,ADJ_NU],[-1,ADJ_LL],[-1,ADJ_CO]];
-        if(curve==="IndiosAdj")      return [[1,ADJ_IN]];
+      if(state.adjust && adjustDefs){
+        var defs=adjustDefs.series;
+        for(var i=0;i<defs.length;i++){ var s=defs[i]; if(s.name===curve){
+          if(s.type==="net")   return s.terms;
+          if(s.type==="calib") return [[1,s.gauge]];
+        } }
       }
       return [[1,curve]];
     }
@@ -716,7 +720,7 @@
         if(emphOn && !state.emph.has(curve)) return;      // when emphasizing, only those
         var rows=schedRows(curve);
         if(!rows.length) return;
-        var ci=data.names.indexOf(curve), col=PALETTE[ci%PALETTE.length], fo=emphOn?0.22:0.12;
+        var col=colorFor(curve), fo=emphOn?0.22:0.12;
 
         if(state.measure==="cfs"){
           // scheduled flow is a step function of time; a net can step up/down and
@@ -827,7 +831,7 @@
     var box=document.getElementById("seriesList"); box.innerHTML="";
     data.names.forEach(function(nm){
       if(state.measure==="afac" && !acEligible(nm)) return;     // hide ConsolNet (etc.) in AF/acre mode
-      var ci=data.names.indexOf(nm),col=PALETTE[ci%PALETTE.length];
+      var col=colorFor(nm);
       var item=document.createElement("div"); item.className="s-item"+(state.emph.has(nm)?" emph":"");
       var cb=document.createElement("input"); cb.type="checkbox"; cb.checked=state.visible.has(nm);
       cb.addEventListener("click",function(ev){ev.stopPropagation(); if(cb.checked)state.visible.add(nm); else state.visible.delete(nm); render();});
@@ -894,6 +898,7 @@
     document.getElementById("emptyState").style.display="none";
     document.getElementById("mainUI").style.display="flex";
     initControlsForData(); updateMeasureAvailability(); buildSeriesList(); applyMeasureUI(); render();
+    updateSeasonTotalsLink();
   }
   function readFile(file){ var r=new FileReader(); r.onload=function(){ try{ loadText(r.result,"loaded "+file.name,true); }catch(err){ alert("Couldn't read that CSV: "+err.message); } }; r.readAsText(file); }
 
@@ -918,7 +923,7 @@
     if(state.year){
       lines=["Showing "+state.year+" — a completed year (static)."];
     } else {
-      var parts=["GitHub refreshes data a few times per day."];
+      var parts=["GitHub should refresh data a few times per hour, but slows down during times of high load."];
       if(lastModified){ var lm=new Date(lastModified); if(!isNaN(lm)) parts.push("Last updated "+clock(lm)+"."); }
       parts.push('For the most recent gauge readings, go to <a href="https://meas.ose.state.nm.us/district6.jsp" target="_blank" rel="noopener">OSE District 6</a>.');
       lines=[parts.join(" ")];
@@ -1014,6 +1019,119 @@
     if(ACRES_COMMENTS.length){ lines=lines.concat(ACRES_COMMENTS); lines.push(""); }
     ACRE_TARGETS.forEach(function(p){ if(ACRES[p[1]]!=null){ var disp=(p[1]==="IndiosAdj")?"Indios":p[1]; lines.push(disp+"  "+ACRES[p[1]]); } });
     btn.setAttribute("data-info", lines.join("\n"));
+  }
+
+  // ----- per-year Adjust definitions (data/<year>adjustments.csv). Sole source
+  // of the Adjust arithmetic; no built-in fallback. A missing year cascades back
+  // to the most recent year that has a file. If none exists, Adjust is hidden.
+  function parseAdjustments(text){
+    var series=[];
+    text.split(/\r?\n/).forEach(function(line){
+      var raw=line.replace(/\r$/,""); if(!raw.trim()) return;
+      var p=raw.split(","); if(p.length<3) return;
+      var name=p[0].trim(), type=p[1].trim().toLowerCase(), def=p[2].trim(), hide=(p[3]||"").trim();
+      if(name.toLowerCase()==="name") return;              // header row
+      var hideList=hide?hide.split(";").map(function(x){return x.trim();}).filter(Boolean):[];
+      if(type==="net"){
+        var terms=[], d=def; if(!/^[+\-]/.test(d)) d="+"+d;
+        var re=/([+\-])\s*([^+\-]+)/g, m;
+        while((m=re.exec(d))!==null){ var g=m[2].trim(); if(g) terms.push([m[1]==="-"?-1:1, g]); }
+        if(terms.length) series.push({name:name,type:"net",terms:terms,hide:hideList});
+      } else if(type==="calib"){
+        var mm=def.match(/([\d.]+)\s*\*\s*\(\s*(.+?)\s*([+\-])\s*([\d.]+)\s*\)/);
+        if(mm) series.push({name:name,type:"calib",gauge:mm[2].trim(),
+          scale:parseFloat(mm[1]), offset:(mm[3]==="-"?1:-1)*parseFloat(mm[4]), hide:hideList});
+      }
+    });
+    return series.length?{series:series}:null;
+  }
+  function loadAdjustments(cb){
+    var floor=2011;
+    function tryYear(yy){
+      if(yy<floor){ adjustDefs=null; rebuildColorSrc(); updateAdjustUI(); if(cb)cb(); return; }
+      fetch("data/"+yy+"adjustments.csv",{cache:"no-store"}).then(function(r){ if(!r.ok)throw 0; return r.text(); })
+        .then(function(txt){ var d=parseAdjustments(txt);
+          if(d){ adjustDefs=d; rebuildColorSrc(); updateAdjustUI(); if(cb)cb(); }
+          else tryYear(yy-1); })
+        .catch(function(){ tryYear(yy-1); });
+    }
+    tryYear(dataYear());
+  }
+  function adjustInfoText(){
+    if(!adjustDefs) return "";
+    return adjustDefs.series.map(function(s){
+      if(s.type==="net")
+        return s.name+" = "+s.terms.map(function(t,i){ return (t[0]<0?" − ":(i===0?"":" + "))+t[1]; }).join("");
+      var off=s.offset;
+      return s.name+" = "+s.scale+" × ("+s.gauge+" "+(off<0?("+ "+Math.abs(off)):("− "+off))+")";
+    }).join("\n");
+  }
+  function updateAdjustUI(){
+    var seg=document.getElementById("adjustSeg"), note=document.getElementById("adjustNote"),
+        hint=document.getElementById("adjustHint"), btn=document.querySelector('#adjustSeg [data-v="adjust"]');
+    if(!seg) return;
+    if(adjustDefs){
+      seg.style.display=""; if(hint)hint.style.display=""; if(note)note.style.display="none";
+      if(btn) btn.setAttribute("data-info", adjustInfoText());
+    } else {
+      if(state.adjust) setAdjust(false);                   // no config -> fall back to raw
+      seg.style.display="none"; if(hint)hint.style.display="none";
+      if(note){ note.style.display=""; note.textContent="Adjust needs data/"+dataYear()+"adjustments.csv"; }
+    }
+  }
+
+  // ----- Season totals report (post-season): AF per acequia over the season,
+  // computed on the ADJUSTED data regardless of the current toggle.
+  function seasonComplete(){
+    var s=seasonMap[dataYear()]; if(!s) return false;
+    var end=new Date(s.end.replace(" ","T")); if(isNaN(end)) return false;
+    return new Date() > end;                        // the season's end date has passed
+  }
+  function updateSeasonTotalsLink(){
+    var row=document.getElementById("seasonTotalsRow"), link=document.getElementById("seasonTotalsLink");
+    if(!row||!link) return;
+    if(data && seasonComplete()){ row.style.display=""; link.textContent=dataYear()+" season totals →"; }
+    else row.style.display="none";
+  }
+  function openSeasonTotals(){
+    if(!rawData) return;
+    var s=seasonMap[dataYear()]; if(!s) return;
+    var start=new Date(s.start.replace(" ","T")), end=new Date(s.end.replace(" ","T"));
+    if(isNaN(start)||isNaN(end)) return;
+    var adj=computeAdjusted(rawData);               // adjusted data, independent of the toggle
+    var t=adj.t, idx=[];
+    for(var i=0;i<t.length;i++){ var ms=t[i].getTime(); if(ms>=start.getTime()&&ms<=end.getTime()) idx.push(i); }
+    var tWin=idx.map(function(i){return t[i];});
+    var rows=[];
+    adj.names.forEach(function(nm){
+      if(nm==="Nambe Dam Discharge") return;        // reservoir release, not an acequia diversion
+      var vals=idx.map(function(i){return adj.cols[nm][i];});
+      var af=toAF(tWin,vals);
+      rows.push({name:(nm==="IndiosAdj"?"Indios":nm), total:af.length?af[af.length-1]:0});
+    });
+    var year=dataYear();
+    var fmtAF=function(v){ return v.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1}); };
+    var body=rows.map(function(r){ return "<tr><td>"+r.name+"</td><td class=\"n\">"+fmtAF(r.total)+"</td></tr>"; }).join("");
+    var range=fmtDateShort(start)+" – "+fmtDateShort(end);
+    var html='<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+      +'<meta name="viewport" content="width=device-width, initial-scale=1">'
+      +'<title>'+year+' Season Totals</title><style>'
+      +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#242a2e;max-width:560px;margin:32px auto;padding:0 18px;line-height:1.5}'
+      +'h1{font-size:20px;margin:0 0 2px}.sub{color:#5c666c;font-size:13px;margin:0 0 16px}'
+      +'table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid #e6e2da}'
+      +'th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#8a949a}'
+      +'td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}'
+      +'.foot{color:#8a949a;font-size:11.5px;margin-top:16px}@media print{body{margin:0}}'
+      +'</style></head><body>'
+      +'<h1>'+year+' Season Totals</h1>'
+      +'<p class="sub">Acre-feet per acequia · '+range+'</p>'
+      +'<table><thead><tr><th>Acequia</th><th class="n">Season Total (AF)</th></tr></thead>'
+      +'<tbody>'+body+'</tbody></table>'
+      +'<p class="foot">Based on OSE and USGS provisional data, with PVID Gauge Explorer adjustments applied. '
+      +'Values reflect linear interpolation across any gaps.</p>'
+      +'</body></html>';
+    var w=window.open("","_blank");
+    if(w){ w.document.write(html); w.document.close(); }
   }
   function parseSchedule(text){
     var out=[];
@@ -1111,7 +1229,7 @@
         if(mode==="current"){
           row.style.display="none";
           if(state.year===null) return;        // already on the live year
-          state.year=null; clearSchedule(); reloadFromFile(true,true); rebuildCycleButtons(); loadAcres();
+          state.year=null; clearSchedule(); rebuildCycleButtons(); loadAcres(); loadAdjustments(function(){ reloadFromFile(true,true); });
         } else {
           row.style.display="";
           if(state.year!==null) return;         // already showing a prior year
@@ -1124,11 +1242,11 @@
               return;
             }
             years.forEach(function(y){ var o=document.createElement("option"); o.value=y; o.textContent=y; sel.appendChild(o); });
-            sel.value=years[0]; state.year=years[0]; clearSchedule(); reloadFromFile(true,true); rebuildCycleButtons(); loadAcres();
+            sel.value=years[0]; state.year=years[0]; clearSchedule(); rebuildCycleButtons(); loadAcres(); loadAdjustments(function(){ reloadFromFile(true,true); });
           });
         }
       }); });
-      sel.addEventListener("change",function(e){ state.year=Number(e.target.value); clearSchedule(); reloadFromFile(true,true); rebuildCycleButtons(); loadAcres(); });
+      sel.addEventListener("change",function(e){ state.year=Number(e.target.value); clearSchedule(); rebuildCycleButtons(); loadAcres(); loadAdjustments(function(){ reloadFromFile(true,true); }); });
     })();
 
     var ymv=document.getElementById("ymaxVal");
@@ -1197,9 +1315,12 @@
     setInterval(checkForUpdate, 60000);          // watch the CSV's timestamp for new data
     document.addEventListener("visibilitychange",function(){ if(!document.hidden) checkForUpdate(); });
 
+    document.getElementById("seasonTotalsLink").addEventListener("click",function(e){ e.preventDefault(); openSeasonTotals(); });
+
     loadSchedulesManifest();
     loadAcres();
-    loadSeasonDates(tryAutoLoad); // fetch season window first, then load data (no-ops on file://)
+    // load the year's Adjust definitions first, then the season window, then the data
+    loadAdjustments(function(){ loadSeasonDates(tryAutoLoad); });
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init); else init();
 })();

@@ -1,14 +1,6 @@
 {
   "cycles": [
     {
-      "name": "Cycle 7",
-      "year": 2023,
-      "num": 7,
-      "file": "2023cycle7.csv",
-      "start": "2023-06-24 06:00",
-      "end": "2023-07-08 06:00"
-    },
-    {
       "name": "Cycle 1",
       "year": 2026,
       "num": 1,

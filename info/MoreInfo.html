@@ -32,32 +32,46 @@
   <h1>More information</h1>
 
   <h2>What does “provisional” data mean?</h2>
-  <p>This website harvests data from USGS and OSE gauge websites that are marked
-  “provisional.” At the end of each year, those agencies may adjust the data to
+  <p>The Gauge Explorer harvests data from USGS and OSE gauge websites that are marked
+  “provisional.”  At the end of each year, USGS and OSE may adjust their data to
   account for calibration changes, known instrument problems, debris stuck in
   gauges, and the like — but the PVID Gauge Explorer will not be updated with
-  such changes. If a gauge sends no reading to OSE for a long time, the Gauge
-  Explorer assumes a linear interpolation between readings.</p>
+  such changes.</p>
+  
+  <p>Each harvest gets only a few days of data.  The Gauge Explorer refreshes itself
+   with anything new since the last harvest.  If a gauge originally sent no reading to OSE for a long time,
+   the Gauge Explorer assumes a linear interpolation between those readings, and never goes back
+   to USGS or OSE to see if the blank data were later filled in.</p>
+
+  <h2>How often is the data refreshed?</h2>
+    <p>Now, running on GitHub (a free service), we have asked for a refresh every 20 minutes.
+      But GitHub often gets overloaded and slows down, sometimes for hours.  If this becomes too
+      annoying, we'll change to a paid service for better reliability.</p>
 
   <h2>What are the units of water flow?</h2>
-  <p>CFS = cubic foot per second.  AF = acre-foot = 43,560 cubic feet.
-    If one CFS flows steadily for 24 hours, a total of 1.98 acre-feet has passed.
-  </p>
+  <p>CFS = cubic foot per second.</p>
+  <p>  AF = acre-foot = 43,560 cubic feet.
+    If one CFS flows steadily for 24 hours, a total of 1.98 acre-feet has passed.</p>
 
   <h2>How are the data manipulated in the graph?</h2>
   <ul>
-    <li><strong>Data adjustments = None</strong> and <strong>Graph = Flow (CFS)</strong>
-    shows exactly the data harvested from USGS and OSE.</li>
-    <li><strong>Data adjustments = Adjust:</strong> hover your mouse over this
-    button in the explorer to see what it does.</li>
-    <li><strong>Graph = Total (AF)</strong> adds up each gauge’s CFS during the
+    <li><strong>Data adjustments</strong> = None and <strong>Graph</strong>
+    = Flow (CFS) shows exactly the data harvested from USGS and OSE.</li>
+    <li><strong>Data adjustments</strong> = Adjust:  Hover your mouse over this
+    button in the Gauge Explorer to see what it does.</li>
+    <li><strong>Graph</strong> = Total (AF) adds up each gauge’s CFS during the
     displayed time interval, showing the accumulated total as a function of time.
     A linear interpolation between gauge readings is used. A long interval of
-    “no reading” of a gauge is shown as a dashed line on the graph.</li>
+    “no reading” of a gauge is shown as a dashed line on the Total(AF) graph.</li>
+  <li>None of the graphical data manipulations changes the Gauge Explorer's 
+    CFS table itself — only how the data are displayed.</li>
   </ul>
 
-  <p class="close">None of these manipulations changes the CFS table itself —
-  only how the data are displayed.</p>
+  <h2>For TotalAF/acre, are the "irrigable acres" accurate?</h2>
+  <p>No, not yet.  A work in progress.  In the future, maybe we should use TBI reports for
+    the non-Pueblo acequias, and increase Nambe Pueblo's number to include acres to be
+    irrigated from surface water instead of metered wells. For now, hover your mouse over the 
+    TotalAF/acre button to see what we're using.</p>
 
   <footer>Return to the explorer tab to keep exploring.</footer>
 </main>

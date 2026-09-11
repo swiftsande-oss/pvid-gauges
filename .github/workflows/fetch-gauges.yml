@@ -1,7 +1,7 @@
 name: Fetch OSE gauges
 
-# Runs every 5 hrs: 5:10, 10:10, etc for now. The gauges themselves only report
-# every 15 minutes, so this keeps the published data at most ~30 min behind.
+# The gauges themselves only report
+# every 15 minutes, so this cron keeps the published data at most ~35 min behind.
 on:
   schedule:
     - cron: "14,34,54 * * * *"

@@ -1,6 +1,7 @@
 backfill*/
-revisionHistory/
-miscellaneous/
+revisionHistory*/
+miscellaneous*/
+regression_tests/sandbox
 __pycache__/
 *.pyc
 *.tmp

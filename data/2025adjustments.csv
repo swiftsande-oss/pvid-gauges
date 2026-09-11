@@ -1,0 +1,4 @@
+name,type,definition,hide
+NambePuebloNet,net,High Line + Upper Consolidated - Nueva - Llano - Comunidad,High Line
+ConsolNet,net,Upper Consolidated - Nueva - Llano - Comunidad,Upper Consolidated;Lower Consolidated
+IndiosAdj,calib,1.0724 * (Indios - 0.135),Indios

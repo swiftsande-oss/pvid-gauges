@@ -215,10 +215,16 @@ def build_wide(gauge_files: list) -> None:
         all_ts.update(d)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     names = [n for n, _ in gauge_files]
+    # The live wide holds only the CURRENT year, taken as the year of the most
+    # recent reading (local, DST-proof, no timezone math). At the New Year this
+    # rolls over on its own; by_gauge keeps all history for archiveYear.py.
+    cur = max(all_ts)[:4] if all_ts else ""
     with WIDE_CSV.open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["timestamp"] + names)
         for ts in sorted(all_ts):
+            if cur and ts[:4] != cur:
+                continue
             w.writerow([ts] + [cols[n].get(ts, "") for n in names])
 
 
