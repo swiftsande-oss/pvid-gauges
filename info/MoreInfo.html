@@ -38,10 +38,10 @@
   gauges, and the like — but the PVID Gauge Explorer will not be updated with
   such changes.</p>
   
-  <p>Each harvest gets only a few days of data.  The Gauge Explorer refreshes itself
-   with anything new since the last harvest.  If a gauge originally sent no reading to OSE for a long time,
-   the Gauge Explorer assumes a linear interpolation between those readings, and never goes back
-   to USGS or OSE to see if the blank data were later filled in.</p>
+  <p>Each harvest gets the most recent few days of data.  The Gauge Explorer refreshes itself
+   with anything new since the previous harvest, usually just 20 minutes worth.  
+   The Gauge Explorer assumes a linear interpolation between readings, and never goes back
+   to USGS or OSE to see if a long stretch of blank data was later filled in.</p>
 
   <h2>How often is the data refreshed?</h2>
     <p>Now, running on GitHub (a free service), we have asked for a refresh every 20 minutes.
@@ -49,9 +49,9 @@
       annoying, we'll change to a paid service for better reliability.</p>
 
   <h2>What are the units of water flow?</h2>
-  <p>CFS = cubic foot per second.</p>
-  <p>  AF = acre-foot = 43,560 cubic feet.
-    If one CFS flows steadily for 24 hours, a total of 1.98 acre-feet has passed.</p>
+  <li>CFS = cubic foot per second.</li>
+  <li>  AF = acre-foot = 43,560 cubic feet.
+    If one CFS flows steadily for 24 hours, a total of 1.98 acre-feet has passed.</li>
 
   <h2>How are the data manipulated in the graph?</h2>
   <ul>

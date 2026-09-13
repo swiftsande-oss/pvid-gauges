@@ -200,7 +200,7 @@ additive human step (see §6).
   real-time management. The real fix is moving the *same* fetcher to an always-on
   host (a small VPS, or cPanel cron if the host supports Python) — a
   *where-it-runs* change only; script, CSVs, and explorer are unchanged.
-- **The real cadence ceiling is OSE's servers**, which are already unstable.
+- **The real cadence ceiling is OSE's servers.**
   Confirm an acceptable request frequency with OSE before increasing it — a
   cadence they've blessed won't get throttled or blocked. (OSE is currently OK
   with ~20-minute polling.)
@@ -262,12 +262,12 @@ additive human step (see §6).
   render time, so raw data is always recoverable.
 - **One author per file.** The GitHub Action authors the live data
   (`discharge_cfs_wide.csv`, `by_gauge/*`, `last_run.json`); the human authors
-  everything else. Never commit changes to the Action's files — the routine is
-  pull → edit your files → commit → pull → push, and `git restore <file>` undoes
+  everything else. Never commit human changes to the Action's files — the human routine is
+  pull → edit the human files → commit → pull → push, and `git restore <file>` undoes
   an accidental edit to an Action-owned file before it becomes a commit.
 - Small, reversible changes, each verified before moving on; keep a stable
   known-good version while a new revision is in progress.
 - Honesty about limits: when a value couldn't be confirmed (e.g. a live fetch a
   sandbox couldn't reach), it was flagged for human check rather than asserted.
-- A regression-testing process lives in the repo; run it before trusting any
+- A regression-testing process lives in the repo.  Run it before trusting any
   change to the derived-data math.
