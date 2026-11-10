@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 25 504 504">
+  <style>
+    .ax{stroke:#222} .pt{fill:#fff}
+    @media (prefers-color-scheme: dark){.ax{stroke:#ddd} .pt{fill:#35363a}}
+  </style>
+  <rect x="232" y="241" width="276" height="229" fill="#b4c7e7"/>
+  <path class="ax" d="M28 60V470H500" fill="none" stroke-width="30" stroke-linecap="square"/>
+  <polyline points="28,470 188,470 269,197 322,217 373,286 458,244" fill="none" stroke="#4472c4" stroke-width="34" stroke-linejoin="round" stroke-linecap="round"/>
+  <g class="pt" stroke="#4472c4" stroke-width="16">
+    <circle cx="110" cy="470" r="26"/><circle cx="188" cy="470" r="26"/>
+    <circle cx="269" cy="197" r="26"/><circle cx="322" cy="217" r="26"/>
+    <circle cx="373" cy="286" r="26"/><circle cx="458" cy="244" r="26"/>
+  </g>
+</svg>
