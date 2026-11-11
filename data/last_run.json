@@ -1,16 +1,16 @@
 {
-  "run_utc": "2026-11-11T01:23:29Z",
+  "run_utc": "2026-11-11T08:06:54Z",
   "gauges": {
     "Nambe Dam Discharge": {
       "site": "08294210",
-      "added": 16,
-      "latest": "2026-11-10 17:15",
+      "added": 28,
+      "latest": "2026-11-11 00:15",
       "ok": true
     },
     "High Line": {
       "id": 22,
-      "added": 8,
-      "latest": "2026-11-10 17:30",
+      "added": 17,
+      "latest": "2026-11-11 00:15",
       "ok": true
     },
     "Upper Consolidated": {
@@ -111,8 +111,8 @@
     },
     "Otra Vanda": {
       "id": 45,
-      "added": 10,
-      "latest": "2026-11-10 17:45",
+      "added": 15,
+      "latest": "2026-11-11 00:15",
       "ok": true
     },
     "Rancho": {
@@ -129,8 +129,8 @@
     },
     "San Ildefonso": {
       "id": 41,
-      "added": 8,
-      "latest": "2026-11-10 17:30",
+      "added": 14,
+      "latest": "2026-11-11 00:15",
       "ok": true
     }
   }
